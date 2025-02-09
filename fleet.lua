@@ -10,8 +10,9 @@ local SHIP_RADIUS = 5
 local DEAD_COLOR = { 50, 50, 50 }
 local MAX_BEAM_DIST = 100
 
-local draggingEdgeStartShip = nil
-local draggingEdgeEnd = nil
+local draggingShip
+local draggingEdgeStartShip
+local draggingEdgeEnd
 
 local function isInShip(pos)
     for i, ship in ipairs(fleet.ships) do
@@ -23,22 +24,37 @@ end
 
 function love.mousepressed(x, y, button, istouch, presses)
     local ship = isInShip({ x = x, y = y })
-
-    if ship then
-        draggingEdgeStartShip = ship
-        ship.vel = nil
+    if button == 1 then
+        if ship then
+            draggingShip = ship
+        else
+            table.insert(fleet.ships,
+                { pos = { x = x, y = y }, vel = nil, dir = 0, color = { 0, 0, 255 }, alive = true, beamTarget = nil, })
+        end
+    elseif button == 2 then
+        if ship then
+            draggingEdgeStartShip = ship
+            ship.vel = nil
+        end
     end
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
-    if draggingEdgeStartShip then
-        draggingEdgeStartShip.vel = geom.sub({ x = x, y = y }, draggingEdgeStartShip.pos)
-        draggingEdgeStartShip = nil
-        draggingEdgeEnd = nil
+    if button == 1 then
+        draggingShip = nil
+    elseif button == 2 then
+        if draggingEdgeStartShip then
+            draggingEdgeStartShip.vel = geom.sub({ x = x, y = y }, draggingEdgeStartShip.pos)
+            draggingEdgeStartShip = nil
+            draggingEdgeEnd = nil
+        end
     end
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
+    if draggingShip then
+        draggingShip.pos = { x = x, y = y }
+    end
     if draggingEdgeStartShip then
         draggingEdgeEnd = { x = x, y = y }
     end
@@ -60,6 +76,8 @@ function updateBeam(ship, planets)
     -- draw line to closest
     if closest and closest_dist < MAX_BEAM_DIST then
         ship.beamTarget = closest
+    else
+        ship.beamTarget = nil
     end
 end
 
@@ -88,8 +106,10 @@ fleet.draw = function(planets)
 end
 
 fleet.update = function(dt, planets)
+    draggingEdgeEnd, draggingEdgeStartShip, draggingEdgeEnd = nil, nil, nil
     for i, ship in ipairs(fleet.ships) do
         if ship.alive then
+            ship.vel = ship.vel or { x = 0, y = 0 }
             ship.pos.x = ship.pos.x + ship.vel.x * dt
             ship.pos.y = ship.pos.y + ship.vel.y * dt
 
@@ -111,7 +131,9 @@ fleet.update = function(dt, planets)
             end
 
             updateBeam(ship, planets)
-            beam(ship.pos, planets[ship.beamTarget].pos, 10)
+            if ship.beamTarget then
+                beam(ship.pos, planets[ship.beamTarget].pos, 10)
+            end
         end
     end
 end
