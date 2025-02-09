@@ -89,7 +89,7 @@ fleet.draw = function(planets)
             love.graphics.line(ship.pos.x, ship.pos.y, planets[ship.beamTarget].pos.x, planets[ship.beamTarget].pos.y)
         end
 
-        if state == State.SETUP and ship.vel then
+        if state == STATE_SETUP and ship.vel then
             love.graphics.setColor(255, 255, 255)
             love.graphics.setLineWidth(1)
             love.graphics.line(ship.pos.x, ship.pos.y, ship.pos.x + ship.vel.x, ship.pos.y + ship.vel.y)
