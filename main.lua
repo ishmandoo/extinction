@@ -1,46 +1,52 @@
-local planets = {
-    { radius = 100, pos = { x = 300, y = 200 }, color = { 255, 0, 0 }, creatures = { 0, 10 } },
-    { radius = 50,  pos = { x = 600, y = 200 }, color = { 0, 255, 0 }, creatures = {} },
-}
+local geom = require("geometry")
+local fleet = require("fleet")
+local ss = require("solarSystem")
 
-local fleet = {
-    { pos = { x = 300, y = 80 }, vel = { x = 100, y = 0 }, dir = 0, color = { 0, 0, 255 } },
-}
+STATE_SETUP = "setup"
+STATE_RUNNING = "running"
+state = STATE_SETUP
+
+function love.conf(t)
+    t.console = true
+end
 
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
 end
 
 function love.draw()
-    for i, planet in ipairs(planets) do
-        love.graphics.setColor(planet.color)
-        love.graphics.circle("fill", planet.pos.x, planet.pos.y, planet.radius)
-        for j, creature in ipairs(planet.creatures) do
-            love.graphics.setColor(0, 255, 0)
-            love.graphics.circle("fill", planet.pos.x + planet.radius * math.cos(creature),
-                planet.pos.y + planet.radius * math.sin(creature), 5)
-        end
-    end
-
-    for i, ship in ipairs(fleet) do
-        love.graphics.setColor(ship.color)
-        love.graphics.circle("fill", ship.pos.x, ship.pos.y, 5)
-    end
+    fleet.draw(ss.planets)
+    ss.draw()
 end
 
 function love.update(dt)
-    for i, ship in ipairs(fleet) do
-        ship.pos.x = ship.pos.x + ship.vel.x * dt
-        ship.pos.y = ship.pos.y + ship.vel.y * dt
+    if state == STATE_RUNNING then
+        fleet.update(dt, ss.planets)
+    end
+end
 
-        for j, planet in ipairs(planets) do
-            local dx = planet.pos.x - ship.pos.x
-            local dy = planet.pos.y - ship.pos.y
-            local dist = math.sqrt(dx * dx + dy * dy)
-            local acc = 1000000 / (dist * dist)
+function love.keypressed(key)
+    if key == "space" then
+        state = STATE_RUNNING
+    end
+end
 
-            ship.vel.x = ship.vel.x + acc * dx / dist * dt
-            ship.vel.y = ship.vel.y + acc * dy / dist * dt
+function explode(pos, r)
+    for i, creature in ipairs(ss.creatures) do
+        local dx = creature.pos.x - pos.x
+        local dy = creature.pos.y - pos.y
+        local dist = math.sqrt(dx * dx + dy * dy)
+
+        if geom.dist(pos, creature.pos) < r then
+            creature.alive = false
+        end
+    end
+end
+
+function beam(beamStart, beamEnd, r)
+    for i, creature in ipairs(ss.creatures) do
+        if geom.distToLine(beamStart, beamEnd, creature.pos) < r then
+            creature.alive = false
         end
     end
 end
