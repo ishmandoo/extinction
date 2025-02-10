@@ -3,11 +3,11 @@ local geom = require("geometry")
 local fleet = {}
 
 fleet.ships = {
-    { pos = { x = 300, y = 80 }, vel = { x = 100, y = 0 }, dir = 0, color = { 0, 0, 255 }, alive = true, beamTarget = nil, },
+    { pos = { x = 300, y = 80 }, vel = { x = 100, y = 0 }, dir = 0, color = { 0., 0., 1. }, alive = true, beamTarget = nil, },
 }
 
 local SHIP_RADIUS = 5
-local DEAD_COLOR = { 50, 50, 50 }
+local DEAD_COLOR = { .2, .2, .2 }
 local MAX_BEAM_DIST = 100
 
 local draggingShip
@@ -29,7 +29,7 @@ function love.mousepressed(x, y, button, istouch, presses)
             draggingShip = ship
         else
             table.insert(fleet.ships,
-                { pos = { x = x, y = y }, vel = nil, dir = 0, color = { 0, 0, 255 }, alive = true, beamTarget = nil, })
+                { pos = { x = x, y = y }, vel = nil, dir = 0, color = { 0., 0., 1. }, alive = true, beamTarget = nil, })
         end
     elseif button == 2 then
         if ship then
@@ -84,13 +84,13 @@ end
 fleet.draw = function(planets)
     for i, ship in ipairs(fleet.ships) do
         if ship.beamTarget then
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(0.9, 0.95, 1.0)
             love.graphics.setLineWidth(10)
             love.graphics.line(ship.pos.x, ship.pos.y, planets[ship.beamTarget].pos.x, planets[ship.beamTarget].pos.y)
         end
 
         if state == STATE_SETUP and ship.vel then
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(1., 1., 1.)
             love.graphics.setLineWidth(1)
             love.graphics.line(ship.pos.x, ship.pos.y, ship.pos.x + ship.vel.x, ship.pos.y + ship.vel.y)
         end
