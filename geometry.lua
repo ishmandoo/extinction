@@ -16,6 +16,10 @@ function geom.sub(a, b)
     return { x = a.x - b.x, y = a.y - b.y }
 end
 
+function geom.mult(a, k)
+    return { x = a.x * k, y = a.y * k }
+end
+
 function geom.tdist(a, b)
     return geom.dist(a.pos, b.pos)
 end

@@ -2,9 +2,8 @@ local geom = require("geometry")
 local fleet = require("fleet")
 local ss = require("solarSystem")
 
-STATE_SETUP = "setup"
-STATE_RUNNING = "running"
-state = STATE_SETUP
+State = { SETUP = "setup", RUNNING = "running" }
+state = State.SETUP
 
 function love.conf(t)
     t.console = true
@@ -20,14 +19,21 @@ function love.draw()
 end
 
 function love.update(dt)
-    if state == STATE_RUNNING then
+    if state == State.RUNNING then
         fleet.update(dt, ss.planets)
     end
 end
 
 function love.keypressed(key)
-    if key == "space" then
-        state = STATE_RUNNING
+    if state == State.SETUP then
+        if key == "space" then
+            state = State.RUNNING
+        end
+    elseif state == State.RUNNING then
+        if key == "space" then
+            print("action")
+            fleet.action(key)
+        end
     end
 end
 
