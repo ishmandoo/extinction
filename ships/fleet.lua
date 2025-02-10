@@ -1,20 +1,19 @@
 local geom = require("geometry")
+require("ships.bombShip")
+require("ships.beamShip")
 
 local fleet = {}
 
-local ShipType = { BEAM = "beam", BOMB = "bomb" }
+
 
 fleet.ships = {
-    { type = ShipType.BOMB, pos = { x = 300, y = 80 }, vel = { x = 100, y = 0 }, color = { 0, 0, 255 }, alive = true, beamTarget = nil, explodeRadius = 100 },
-}
-
-bombs = {
+    createBombShip({ x = 300, y = 80 }, { x = 100, y = 0 }),
+    createBeamShip({ x = 200, y = 280 }, { x = -10, y = -100 })
 }
 
 
 local SHIP_RADIUS = 5
 local DEAD_COLOR = { .2, .2, .2 }
-local MAX_BEAM_DIST = 100
 
 local draggingShip
 local draggingEdgeStartShip
@@ -99,32 +98,10 @@ function fleet.action(key)
         if key == "space" then
             for i, ship in ipairs(fleet.ships) do
                 if ship.type == ShipType.BOMB then
-                    table.insert(bombs,
-                        { pos = geom.mult(ship.pos, 1.0), vel = geom.mult(ship.vel, 0.2), alive = true, explodeRadius = 80 })
+                    table.insert(bombs, createBomb(ship))
                 end
             end
         end
-    end
-end
-
-function updateBeam(ship, planets)
-    -- find closest planet
-    local closest = nil
-    local closest_dist = nil
-    for j, planet in ipairs(planets) do
-        local dist = geom.tdist(ship, planet) - planet.radius
-
-        if closest_dist == nil or dist < closest_dist then
-            closest = j
-            closest_dist = dist
-        end
-    end
-
-    -- draw line to closest
-    if closest and closest_dist < MAX_BEAM_DIST then
-        ship.beamTarget = closest
-    else
-        ship.beamTarget = nil
     end
 end
 
@@ -136,7 +113,7 @@ fleet.draw = function(planets)
             love.graphics.line(ship.pos.x, ship.pos.y, planets[ship.beamTarget].pos.x, planets[ship.beamTarget].pos.y)
         end
 
-        if state == STATE_SETUP and ship.vel then
+        if state == State.SETUP and ship.vel then
             love.graphics.setColor(1., 1., 1.)
             love.graphics.setLineWidth(1)
             love.graphics.line(ship.pos.x, ship.pos.y, ship.pos.x + ship.vel.x, ship.pos.y + ship.vel.y)
@@ -151,12 +128,7 @@ fleet.draw = function(planets)
         end
     end
 
-    for i, bomb in ipairs(bombs) do
-        if bomb.alive then
-            love.graphics.setColor(255, 255, 0)
-            love.graphics.circle("fill", bomb.pos.x, bomb.pos.y, 2)
-        end
-    end
+    drawBombs()
 end
 
 fleet.update = function(dt, planets)
