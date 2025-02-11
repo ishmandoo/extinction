@@ -1,6 +1,8 @@
 local geom = require("geometry")
 local fleet = require("fleet")
-local ss = require("worlds/solarSystem")
+-- local ss = require("worlds/solarSystem")
+local ss = require("worlds/innerPlanets")
+-- local ss = require("worlds/binaryMoons")
 
 State = { SETUP = "setup", RUNNING = "running" }
 state = State.SETUP
@@ -44,6 +46,7 @@ end
 function love.update(dt)
     if state == State.RUNNING then
         fleet.update(dt, ss.planets)
+        ss.update(dt)
     end
 end
 

@@ -20,6 +20,9 @@ for i, planet in ipairs(ss.planets) do
     end
 end
 
+ss.update = function(dt)
+end
+
 ss.draw = function()
     for i, planet in ipairs(ss.planets) do
         love.graphics.setColor(planet.color)

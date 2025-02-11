@@ -41,4 +41,10 @@ function geom.distToLine(line_start, line_end, pos)
     return math.sqrt(geom.dist2(dist_vec, { x = 0, y = 0 }))
 end
 
+function geom.rotate_vec2d(a, b, angle)
+    local xp = a * math.cos(angle) - b * math.sin(angle)
+    local yp = a * math.sin(angle) + b * math.cos(angle)
+    return { x = xp, y = yp }
+end
+
 return geom
