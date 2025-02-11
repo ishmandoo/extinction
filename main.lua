@@ -2,10 +2,11 @@ local geom = require("geometry")
 
 -- local ss = require("worlds/solarSystem")
 -- local ss = require("worlds/innerPlanets")
--- local ss = require("worlds/binaryMoons")
+local ss = require("worlds/binaryMoons")
 
+-- change the fleet formation in ships/fleet and ships/formations
 local fleet = require("ships/fleet")
-local ss = require("worlds/solarSystem")
+-- local ss = require("worlds/solarSystem")
 
 State = { SETUP = "setup", RUNNING = "running" }
 state = State.SETUP

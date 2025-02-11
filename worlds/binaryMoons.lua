@@ -6,7 +6,7 @@ local ss = {}
 local DEAD_COLOR = { 50, 50, 50 }
 
 ss.planets = {
-    { radius = 40, pos = { x = 400, y = 400 }, color = { 255, 0, 0 }, creatures = { 0, 25, 77 }, period = 2, center = { x = 400, y = 200 },
+    { radius = 40, pos = { x = 400, y = 400 }, color = { 255, 0, 0 }, creatures = { 0, 25, 77 }, period = 10, center = { x = 400, y = 300 },
         moons = {
             { radius = 20, pos = { x = 70, y = 0 }, color = { 0.4, 0.3, 0.5 }, period = .7 }
         }

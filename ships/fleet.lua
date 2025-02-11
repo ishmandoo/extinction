@@ -2,14 +2,37 @@ local geom = require("geometry")
 require("ships.bombShip")
 require("ships.beamShip")
 
-local fleet = {}
+
+-- local formation = require("ships.formations.alpha")
+-- local formation = require("ships.formations.line")
+local formation = require("ships.formations.wedge")
+
+local fleet = { ships = {} }
+
+-- add ships to the fleet based on formation
+for _, bombShip in ipairs(formation.bombShips) do
+    table.insert(
+        fleet.ships,
+        createBombShip(bombShip.pos, bombShip.vel)
+    )
+end
+for _, beamShip in ipairs(formation.beamShips) do
+    table.insert(
+        fleet.ships,
+        createBeamShip(beamShip.pos, beamShip.vel)
+    )
+end
 
 
 
-fleet.ships = {
-    createBombShip({ x = 300, y = 80 }, { x = 100, y = 0 }),
-    createBeamShip({ x = 200, y = 280 }, { x = -10, y = -100 })
-}
+-- moved to formations.alpha
+-- fleet.ships = {
+--     createBombShip({ x = 300, y = 80 }, { x = 100, y = 0 }),
+--     createBeamShip({ x = 200, y = 280 }, { x = -10, y = -100 })
+-- }
+
+
+
 
 
 local SHIP_RADIUS = 5
@@ -131,6 +154,9 @@ fleet.draw = function(planets)
     drawBombs()
 end
 
+
+-- bug: if multiple ships are at the same location, same velocity, they update too quickly.
+-- create multiple ships at the same location and velocity to recreate
 fleet.update = function(dt, planets)
     draggingEdgeEnd, draggingEdgeStartShip, draggingEdgeEnd = nil, nil, nil
     for i, ship in ipairs(fleet.ships) do

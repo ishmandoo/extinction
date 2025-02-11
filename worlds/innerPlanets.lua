@@ -21,8 +21,8 @@ ss.planets = {
     --margs and brats
     { radius = 6, pos = { x = 700, y = 200 }, color = { 1., 0.8, 0.6 }, creatures = {}, period = 20, center = { x = 400, y = 300 },
         moons = {
-            { radius = 2, pos = { x = 10, y = 0 }, color = { 0.7, 0.5, 0.3 }, period = 0.5, creatures = {}},
-            { radius = 1, pos = { x = 5, y = 0 }, color = { 0.8, 0.6, 0.4 }, period = 0.25, creatures = {}}
+            { radius = 2, pos = { x = 12, y = 0 }, color = { 0.7, 0.5, 0.3 }, period = 0.5, creatures = {}},
+            { radius = 1, pos = { x = 8, y = 0 }, color = { 0.8, 0.6, 0.4 }, period = 0.25, creatures = {}}
         }
     },
 }
